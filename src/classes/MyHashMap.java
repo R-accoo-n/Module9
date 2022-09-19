@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class MyHashMap<K, V> {
     private static final int CAPACITY = 16;
-    private final MyMapBucket<K, V>[] bucket;
+    private MyMapBucket<K, V>[] bucket;
     private int size = 0;
 
     @SuppressWarnings("unchecked")
@@ -43,6 +43,23 @@ public class MyHashMap<K, V> {
         }
     }
 
+    public void remove(K key) {
+        if(containsKey(key)) {
+            int hash = getHash(key);
+            bucket[hash].removeEntry(getEntry(key));
+            size--;
+        }
+    }
+
+    public void clear(){
+        this.bucket = null;
+        this.size = 0;
+    }
+
+    public int size() {
+        return size;
+    }
+
     public V get(K key) {
         return containsKey(key) ? (V) Objects.requireNonNull(getEntry(key)).getValue() : null;
     }
@@ -50,17 +67,6 @@ public class MyHashMap<K, V> {
     public boolean containsKey(K key) {
         int hash = getHash(key);
         return !(Objects.isNull(bucket[hash]) || Objects.isNull(getEntry(key)));
-    }
-
-    public void delete(K key) {
-        if(containsKey(key)) {
-            int hash = getHash(key);
-            bucket[hash].removeEntry(getEntry(key));
-            size--;
-        }
-    }
-    public int size() {
-        return size;
     }
 
     private static class MyMapBucket<K, V> {
